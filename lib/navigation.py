@@ -40,6 +40,7 @@ def get_ad_cases():
             "//android.widget.Button",
             '//android.view.View[@resource-id="end-screen-adapter"]/android.view.View[1]/android.widget.Image',
             '//android.widget.Image[@text="close"]',
+            '//android.widget.Button[@resource-id="next-button"]',
         ],
         "id": [
             "closeButton",
