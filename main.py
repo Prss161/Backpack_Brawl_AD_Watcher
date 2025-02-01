@@ -16,7 +16,7 @@ def main():
     try:
         appium_service.start()
         print("Appium server started!")
-        launch_app(10)
+        launch_app(99)
     except Exception as e:
         print(f"Error Message: {e}")
     finally:
