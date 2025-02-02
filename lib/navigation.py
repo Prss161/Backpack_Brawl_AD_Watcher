@@ -17,14 +17,14 @@ def find_and_click(driver, timeout=10):
                         element.click()
                         print(f"Clicked element with locator: [{by}] {locator}")
                         return True
-                    google_play = driver.find_element(
-                        AppiumBy.XPATH,
-                        '//android.view.View[@content-desc="Search Google Play"]',
-                    )
-                    if google_play.is_displayed():
-                        driver.press_keycode(4)
                 except:
                     time.sleep(0.5)
+            google_play = driver.find_element(
+                AppiumBy.XPATH,
+                '//android.view.View[@content-desc="Search Google Play"]',
+            )
+            if google_play.is_displayed():
+                driver.press_keycode(4)
 
     print(f"Failed to find and click any element: [{by}] {locator}")
     return False
