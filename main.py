@@ -32,14 +32,15 @@ def launch_app(ads: int):
     window_y = window_size["height"]
     print(f"{window_x}, {window_y}")
     driver.tap([(window_x / 5, window_y / 1.01)])
+    time.sleep(1)
     driver.swipe(window_x / 2, window_y / 1.1, window_x / 2, window_y / 3, 550)
-    time.sleep(5)
+    time.sleep(3)
     while ad < ads:
         try:
             if repeat == False:
                 driver = webdriver.Remote("http://localhost:4723", options=options)
                 driver.tap([(window_x / 2, window_y / 2)])
-                time.sleep(30)
+                time.sleep(35)
             find_and_click(driver)
             game_view = driver.find_element(
                 "xpath", '//android.view.View[@content-desc="Game view"]'
