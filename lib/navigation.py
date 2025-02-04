@@ -2,40 +2,49 @@ import time
 from appium.webdriver.common.appiumby import AppiumBy
 
 
-def find_and_click(driver, timeout=10):
+class TimeoutException(Exception):
+    pass
+
+
+def find_and_click(driver, debug=None, timeout=60):
     end_time = time.time() + timeout
     ad_cases = get_ad_cases()
+
     while time.time() < end_time:
-        print(f"Time remaining (To Abort): {end_time - time.time():.2f}")
+        remaining_time = end_time - time.time()
+        print(f"Time remaining (To Abort): {remaining_time:.2f}")
+
         for by, locators in ad_cases.items():
             for locator in locators:
                 try:
-                    print(f"🔍 Trying to find element: [{by}] {locator}")
-                    elements = driver.find_elements(
-                        getattr(AppiumBy, by.upper()), locator
-                    )
-                    if elements:
-                        element = elements[0]
-                        if element.is_displayed():
-                            element.click()
-                            print(f"✅ Clicked element with locator: [{by}] {locator}")
-                            return True
-                    else:
-                        continue
-                    google_play = driver.find_elements(
-                        AppiumBy.XPATH,
-                        '//android.view.View[@content-desc="Search Google Play"]',
-                    )
-                    if google_play:
-                        google = google_play[0]
-                        if google.is_displayed():
+                    if debug:
+                        print(f"🔍 Trying to find element: [{by}] {locator}")
+
+                    if by == "google_play":
+                        google_play = driver.find_elements(AppiumBy.XPATH, locator)
+                        if google_play and google_play[0].is_displayed():
                             driver.press_keycode(4)
                             print(
                                 "🔙 Google Play search detected, pressing back button."
                             )
-                except:
-                    print(f"Error occurred while trying to find and click element")
-    print(f"Failed to find and click any element: [{by}] {locator}")
+
+                    elif by == "game_view":
+                        game_view = driver.find_elements(AppiumBy.XPATH, locator)
+                        if game_view and game_view[0].is_displayed():
+                            print("✅ Detected game view panel. Ad watching completed.")
+                            return True
+
+                    else:
+                        elements = driver.find_elements(
+                            getattr(AppiumBy, by.upper()), locator
+                        )
+                        if elements and elements[0].is_displayed():
+                            elements[0].click()
+                            print(f"✅ Clicked element with locator: [{by}] {locator}")
+                except Exception as e:
+                    print(f"⚠️ Error: {e}")
+
+    print("⏳ Timeout reached, exiting function.")
     return False
 
 
@@ -63,5 +72,7 @@ def get_ad_cases():
             "Close",
             "skipPlayableButton",
         ],
+        "google_play": ['//android.view.View[@content-desc="Search Google Play"]'],
+        "game_view": ['//android.view.View[@content-desc="Game view"]'],
         # "tag name": ["button"],
     }

@@ -1,7 +1,7 @@
 from appium.webdriver.appium_service import AppiumService
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
-from lib.navigation import find_and_click
+from lib.navigation import find_and_click, TimeoutException
 import time
 
 appium_service = AppiumService()
@@ -11,33 +11,50 @@ options.platform_name = "Android"
 options.automation_name = "UiAutomator2"
 options.device_name = "127.0.0.1:5555"
 
+MAX_RETRIES = 3
+
 
 def main():
     try:
         appium_service.start()
-        print("Appium server started!")
+        print("✅ Appium server started!")
         launch_app(99)
     except Exception as e:
-        print(f"Error Message: {e}")
+        print(f"🚨 Fatal error: {e}")
     finally:
         appium_service.stop()
+        print("🛑 Appium server stopped.")
 
 
 def launch_app(ads: int):
     ad = 0
-    driver = webdriver.Remote("http://localhost:4723", options=options)
+    driver = None
     repeat = False
-    window_size = driver.get_window_size()
-    window_x = window_size["width"]
-    window_y = window_size["height"]
-    print(f"{window_x}, {window_y}")
-    driver.tap([(window_x / 5, window_y / 1.01)])
-    time.sleep(1)
-    driver.swipe(window_x / 2, window_y / 1.1, window_x / 2, window_y / 3, 550)
-    time.sleep(3)
-    while ad < ads:
-        try:
-            if repeat == False:
+    try:
+        driver = webdriver.Remote("http://localhost:4723", options=options)
+        window_size = driver.get_window_size()
+        window_x = window_size["width"]
+        window_y = window_size["height"]
+        if window_x != 720 or window_y != 1280:
+            print(
+                f"📱 Your screen size is: {window_x}, {window_y}. Recommended screen resolution is 720x1280"
+            )
+        print(f"📱 Screen size is: {window_x}, {window_y}")
+
+        driver.tap([(window_x / 5, window_y / 1.01)])
+        time.sleep(1)
+        driver.swipe(window_x / 2, window_y * 0.1, window_x / 2, window_y / 1.1, 300)
+        time.sleep(1)
+        driver.swipe(window_x / 2, window_y / 1.1, window_x / 2, window_y / 3, 600)
+        time.sleep(3)
+        consecutive_failures = 0
+
+        while ad < ads:
+            if consecutive_failures >= MAX_RETRIES:
+                print("❌ Too many consecutive failures. Exiting.")
+                break
+
+            if not repeat:
                 driver = webdriver.Remote("http://localhost:4723", options=options)
                 driver.tap([(window_x / 2, window_y / 2)])
                 time.sleep(45)
@@ -47,7 +64,6 @@ def launch_app(ads: int):
             )
             if game_view.is_displayed():
                 ad += 1
-                repeat = False
                 wait_time = 1800
                 end_time = time.time() + wait_time
                 while time.time() < end_time:
@@ -58,14 +74,15 @@ def launch_app(ads: int):
                         end="\r",
                     )
                     time.sleep(1)
-                driver.quit()
             else:
-                print("Game view not visible. Repeating process...")
+                print("⚠️ Game view not visible, retrying...")
                 repeat = True
+                consecutive_failures += 1
 
-        except Exception as e:
-            print(f"Error during ad handling: {e}")
-            repeat = True
+    finally:
+        if driver:
+            driver.quit()
+            print("🚪 Driver closed.")
 
 
 main()
