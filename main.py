@@ -40,7 +40,7 @@ def launch_app(ads: int):
             if repeat == False:
                 driver = webdriver.Remote("http://localhost:4723", options=options)
                 driver.tap([(window_x / 2, window_y / 2)])
-                time.sleep(35)
+                time.sleep(45)
             find_and_click(driver)
             game_view = driver.find_element(
                 "xpath", '//android.view.View[@content-desc="Game view"]'
@@ -48,9 +48,17 @@ def launch_app(ads: int):
             if game_view.is_displayed():
                 ad += 1
                 repeat = False
-                print(f"Ad {ad}/{ads} completed. Waiting for the next ad...")
+                wait_time = 1800
+                end_time = time.time() + wait_time
+                while time.time() < end_time:
+                    remaining_time = end_time - time.time()
+                    minutes, seconds = divmod(remaining_time, 60)
+                    print(
+                        f"Ad {ad}/{ads} completed ✅. Waiting for the next ad. Time left: {int(minutes)}:{int(seconds):02d}",
+                        end="\r",
+                    )
+                    time.sleep(1)
                 driver.quit()
-                time.sleep(1800)
             else:
                 print("Game view not visible. Repeating process...")
                 repeat = True

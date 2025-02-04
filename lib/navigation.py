@@ -6,28 +6,35 @@ def find_and_click(driver, timeout=10):
     end_time = time.time() + timeout
     ad_cases = get_ad_cases()
     while time.time() < end_time:
+        print(f"Time remaining (To Abort): {end_time - time.time():.2f}")
         for by, locators in ad_cases.items():
             for locator in locators:
-                print(f"Trying to find element: [{by}] {locator}")
-                elements = driver.find_elements(getattr(AppiumBy, by.upper()), locator)
-                if elements:
-                    element = elements[0]
-                    if element.is_displayed():
-                        element.click()
-                        print(f"Clicked element with locator: [{by}] {locator}")
-                        return True
-                else:
-                    print(f"Failed looking for element [{by}] {locator}")
-                time.sleep(0.5)
-            google_play = driver.find_elements(
-                AppiumBy.XPATH,
-                '//android.view.View[@content-desc="Search Google Play"]',
-            )
-            if google_play:
-                google = google_play[0]
-                if google.is_displayed():
-                    driver.press_keycode(4)
-                    print("Google Play search detected, pressing back button.")
+                try:
+                    print(f"🔍 Trying to find element: [{by}] {locator}")
+                    elements = driver.find_elements(
+                        getattr(AppiumBy, by.upper()), locator
+                    )
+                    if elements:
+                        element = elements[0]
+                        if element.is_displayed():
+                            element.click()
+                            print(f"✅ Clicked element with locator: [{by}] {locator}")
+                            return True
+                    else:
+                        continue
+                    google_play = driver.find_elements(
+                        AppiumBy.XPATH,
+                        '//android.view.View[@content-desc="Search Google Play"]',
+                    )
+                    if google_play:
+                        google = google_play[0]
+                        if google.is_displayed():
+                            driver.press_keycode(4)
+                            print(
+                                "🔙 Google Play search detected, pressing back button."
+                            )
+                except:
+                    print(f"Error occurred while trying to find and click element")
     print(f"Failed to find and click any element: [{by}] {locator}")
     return False
 
