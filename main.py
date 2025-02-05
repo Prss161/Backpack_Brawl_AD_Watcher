@@ -73,7 +73,7 @@ def launch_app(ads: int):
                         f"Ad {ad}/{ads} completed ✅. Waiting for the next ad. Time left: {int(minutes)}:{int(seconds):02d}",
                         end="\r",
                     )
-                    time.sleep(1)
+                time.sleep(3)
             else:
                 print("⚠️ Game view not visible, retrying...")
                 repeat = True

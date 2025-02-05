@@ -35,6 +35,7 @@ def find_and_click(driver, debug=None, timeout=60):
                             return True
 
                     else:
+                        time.sleep(0.5)
                         elements = driver.find_elements(
                             getattr(AppiumBy, by.upper()), locator
                         )
