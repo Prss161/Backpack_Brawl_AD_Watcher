@@ -64,6 +64,7 @@ def get_ad_cases():
             "//android.widget.RelativeLayout/android.widget.FrameLayout/android.webkit.WebView/android.webkit.WebView/android.view.View[2]/android.view.View[2]",
             '//android.view.View[@resource-id="end-screen-adapter"]/android.view.View[1]/android.widget.Image',
             '//android.widget.ImageView[@resource-id="com.rapidfiregames.backpackbrawl:id/ia_iv_close_button"]',
+            '//android.widget.Button[@resource-id="last-chance-endcard-next-button"]'
             '//android.widget.Image[@text="close"]',
             '//android.widget.Button[@resource-id="next-button"]',
             '//android.widget.Image[@resource-id="closeBtnImg"]',
