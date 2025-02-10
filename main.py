@@ -39,10 +39,13 @@ def launch_app(ads: int):
             print(
                 f"📱 Your screen size is: {window_x}, {window_y}. Recommended screen resolution is 720x1280"
             )
-        print(f"📱 Screen size is: {window_x}, {window_y}")
+        else:
+            print(f"📱 Screen size is: {window_x}, {window_y}")
 
+        print(f"📱 Tapping on shop!")
         driver.tap([(window_x / 5, window_y / 1.01)])
         time.sleep(1)
+        print(f"📱 Scrolling to the Ad for gems!")
         driver.swipe(window_x / 2, window_y * 0.1, window_x / 2, window_y / 1.1, 300)
         time.sleep(1)
         driver.swipe(window_x / 2, window_y / 1.1, window_x / 2, window_y / 3, 600)
@@ -57,6 +60,7 @@ def launch_app(ads: int):
             if not repeat:
                 driver = webdriver.Remote("http://localhost:4723", options=options)
                 driver.tap([(window_x / 2, window_y / 2)])
+                print(f"📱 Tapping on Ad, waiting 45sec")
                 time.sleep(45)
             find_and_click(driver)
             game_view = driver.find_element(
