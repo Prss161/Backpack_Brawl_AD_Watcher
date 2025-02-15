@@ -1,4 +1,6 @@
 import time
+import datetime
+import os
 from appium.webdriver.common.appiumby import AppiumBy
 
 
@@ -40,6 +42,11 @@ def find_and_click(driver, debug=None, timeout=180):
                             getattr(AppiumBy, by.upper()), locator
                         )
                         if elements and elements[0].is_displayed():
+                            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                            screenshot_path = os.path.join(
+                                "img", f"screenshot_{timestamp}.png"
+                            )
+                            driver.get_screenshot_as_file(screenshot_path)
                             elements[0].click()
                             print(f"✅ Clicked element with locator: [{by}] {locator}")
                 except Exception as e:
