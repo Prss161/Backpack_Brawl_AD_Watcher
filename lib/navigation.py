@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 import os
 from appium.webdriver.common.appiumby import AppiumBy
 

@@ -173,3 +173,4 @@ test.py
 test.ipynb
 .gitignore
 .vscode
+img/*
