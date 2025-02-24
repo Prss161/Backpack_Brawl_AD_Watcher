@@ -174,3 +174,5 @@ test.ipynb
 .gitignore
 .vscode
 img/*
+backup
+.gitignore
