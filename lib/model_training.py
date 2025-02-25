@@ -1,7 +1,7 @@
 import os
 import lxml
+import torchvision.transforms as T
 import torch
-import torchvision
 import xml.etree.ElementTree as ET
 from PIL import Image
 
@@ -30,7 +30,8 @@ class PascalVOCDataset:
         tree = lxml.etree.parse(xml_path)
         root = tree.getroot()
         labels = [obj.find("name").text for obj in root.findall(".//object")]
-        return labels
+        result = {value: index for index, value in enumerate(labels)}
+        return result
 
     def get_data_image_id(self, xml_filename):
         return xml_filename.split(".")[0]
@@ -39,6 +40,34 @@ class PascalVOCDataset:
         boxes = self.get_data_boxes(xml_filename)
         areas = [(xmax - xmin) * (ymax - ymin) for xmin, ymin, xmax, ymax in boxes]
         return areas
+
+
+def pytorch__dataset():
+    dir = os.listdir("./img/")
+    xml_files = [file for file in dir if file.endswith(".xml")]
+    img_files = [file[:-4] for file in dir if file.endswith(".png")]
+
+    for xml_file in xml_files:
+        if xml_file[:-4] in img_files:
+            xml_path = xml_file
+            img_path = xml_file[:-4] + ".png"
+            dataset = PascalVOCDataset("./img")
+            boxes = dataset.get_data_boxes(xml_path)
+            class_labels = dataset.get_data_labels(xml_path)
+            class_ids = list(class_labels.values())
+            image_id = dataset.get_data_image_id(xml_path)
+            area = dataset.get_data_area(xml_path)
+
+            image = Image.open("./img/" + img_path).convert("RGB")
+            transform = T.ToTensor()
+            image = transform(image)
+            target = {
+                "boxes": torch.tensor(boxes, dtype=torch.float32),
+                "labels": torch.tensor(class_ids, dtype=torch.int64),
+                "image_id": torch.tensor([image_id]),
+                "area": torch.tensor(area, dtype=torch.float32),
+                "iscrowd": torch.zeros((len(boxes),), dtype=torch.int64),
+            }
 
 
 dataset = PascalVOCDataset("./img")
