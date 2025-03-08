@@ -1,18 +1,38 @@
-# Backpack_Brawl_AD_Watcher
+# Backpack Brawl AD Watcher
 
-Program will watch ADs automatically on Backpack Brawl Mobile app on Bluestacks
-### First steps
-install the required Python packages
+This program automatically watches ads on the Backpack Brawl mobile app.
+
+The project utilizes Python for scripting and automating the process of watching ads for you. It uses Appium for Android automation, leveraging XPATH for navigation through ads and the app menu. For further optimization, screenshots of ads are taken to classify "close" and "skip" buttons using labelimg. This data is then used with OpenCV and PyTorch to create a model for object recognition of the close and skip buttons in ads.
+
+## First Steps
+
+### Install Required Python Packages
+
+Install the required Python packages using the following command:
+
 ```sh
 pip install -r requirements.txt
 ```
-Then, install Appium globally using npm
+
+### Install Appium
+
+Install Appium globally using npm:
+
 ```sh
 npm install -g appium
 ```
-Install Blustacks and enable ADB, set resolution to `1280x720`
-### How to use
-Open Backpack Brawl via Bluestacks and navigate to main menu, then run python:
+
+### Setup Bluestacks
+
+1. Install Bluestacks.
+2. Enable ADB in Bluestacks.
+3. Set the resolution to `1280x720`.
+
+## How to Use
+
+1. Open Backpack Brawl via Bluestacks and navigate to the main menu.
+2. Run the following command to start the script:
+
 ```sh
 python .\main.py
 ```
